@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJ Group Project Timeline</title>
+<style>
+  :root{
+    --paper:#f5f1e8; --paper2:#ece6d8; --ink:#1c1a17; --muted:#6f685c; --rule:#d4ccbb;
+    --blue:#1f3d8f; --red:#d6402a;
+    --p0:#c9b27c; --p1:#3f6fb5; --p2:#d6402a; --p3:#4f8a6b; --p4:#8a7aa8;
+    --serif:"Iowan Old Style","Charter","Palatino","Georgia",serif;
+    --mono:"SF Mono","Menlo","Consolas",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+    background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px;}
+  .wrap{max-width:1500px;margin:0 auto;padding:44px 32px 80px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:18px;gap:24px;flex-wrap:wrap}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+  h1{font-size:40px;font-weight:400;margin:6px 0 0;letter-spacing:-.01em;line-height:1.05}
+  h1 em{color:var(--blue)}
+  .meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.7}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 0 16px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:22px;height:9px;display:inline-block}
+  .dia{width:10px;height:10px;transform:rotate(45deg);display:inline-block;background:var(--ink)}
+  .dia.red{background:var(--red)}
+  .dash{width:22px;height:9px;display:inline-block;background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px);opacity:.7}
+
+  .scroller{overflow-x:auto;border:1px solid var(--ink);background:#fbf8f1}
+  table{border-collapse:collapse;width:100%;min-width:1280px;font-size:12.5px}
+  th,td{border-bottom:1px solid var(--rule);padding:0;height:34px}
+  thead th{font-family:var(--mono);font-weight:400;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--paper2);border-bottom:1px solid var(--ink)}
+  thead .yr th{height:22px;color:var(--ink);border-bottom:1px solid var(--rule)}
+  thead .yr th.y{border-left:1px solid var(--ink);text-align:left;padding-left:8px}
+  .c-ws{position:sticky;left:0;z-index:2;background:#fbf8f1;width:240px;min-width:240px;padding:0 12px;text-align:left;border-right:1px solid var(--ink)}
+  thead .c-ws{background:var(--paper2);z-index:3}
+  .c-del{width:250px;min-width:250px;padding:0 12px;text-align:left;color:var(--muted);font-size:11.5px;border-right:1px solid var(--rule);line-height:1.3}
+  .m{width:48px;min-width:48px;text-align:center;position:relative;border-left:1px dotted var(--rule)}
+  .m.gate{background:rgba(214,64,42,.05)}
+  .m.now{background:rgba(31,61,143,.06)}
+  .num{font-family:var(--mono);font-size:10px;color:var(--muted);margin-right:8px}
+  tr.phase td{background:var(--ink);color:var(--paper);height:26px;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:0 12px;border-bottom:none}
+  tr.phase td.c-ws{background:var(--ink)}
+  tr.phase .tag{display:inline-block;width:10px;height:10px;margin-right:8px;vertical-align:-1px}
+  tbody tr:not(.phase):hover td{background:rgba(31,61,143,.05)}
+  tbody tr:not(.phase):hover td.c-ws{background:#f1eee6}
+  .bar{position:absolute;top:10px;bottom:10px;left:0;right:0}
+  .bar.s{left:4px;border-top-left-radius:0}
+  .bar.e{right:4px}
+  .bar.prov{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.45) 0 4px,transparent 4px 8px)}
+  .ms{position:absolute;top:50%;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;transform:rotate(45deg);background:var(--ink)}
+  .ms.red{background:var(--red)}
+  tr.bill td.m{height:44px}
+  .bm{font-family:var(--mono);font-size:10px;line-height:1.15;color:var(--red)}
+  .bm b{display:block;font-weight:400;font-size:13px;color:var(--ink)}
+  tr.gw td{height:46px;background:rgba(31,61,143,.07)}
+  tr.gw td.c-ws{background:#eaecf2}
+  .gk{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:2px solid var(--blue);background:#fbf8f1;color:var(--blue);font-family:var(--mono);font-size:11px;transform:rotate(45deg)}
+  .gk span{transform:rotate(-45deg)}
+  .gk.pay{border-color:var(--red);color:var(--red)}
+  .m.gwcol{box-shadow:inset 2px 0 0 rgba(31,61,143,.35),inset -2px 0 0 rgba(31,61,143,.35)}
+  h2.sec{font-weight:400;font-size:26px;margin:34px 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+  table.gwt{min-width:0;font-size:13px;border:1px solid var(--ink);background:#fbf8f1}
+  table.gwt th{text-align:left;padding:8px 10px;height:auto}
+  table.gwt td{padding:10px;height:auto;vertical-align:top;line-height:1.45}
+  table.gwt td:first-child{white-space:nowrap}
+  .src{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;display:inline-block;margin-top:4px;color:var(--muted)}
+  .src.rfq{color:var(--blue)}
+  .notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:26px}
+  .note{border-top:2px solid var(--ink);padding-top:10px;font-size:14px;line-height:1.5}
+  .note h3{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:0 0 6px}
+  .note p{margin:0}
+  .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--paper);font-size:12px;padding:8px 10px;max-width:280px;line-height:1.4;opacity:0;transition:opacity .12s;z-index:20;font-family:var(--serif)}
+  .tip .t{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#e9b6a9;display:block;margin-bottom:3px}
+  @media (max-width:900px){.notes{grid-template-columns:1fr}h1{font-size:30px}}
+  @media print{
+    @page{size:A3 landscape;margin:10mm}
+    .wrap{padding:0;max-width:none}
+    .scroller{overflow:visible;border:1px solid var(--ink)}
+    table{min-width:0;font-size:9.5px}
+    .c-ws{width:180px;min-width:180px}.c-del{width:190px;min-width:190px;font-size:9px}
+    .m{width:auto;min-width:0}
+    th,td{height:24px}
+    .tip{display:none}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="kicker">SJ Group · Website Consolidation &amp; CMS Scalability</div>
+      <h1>17-Month Project Timeline <em>Nov 2026 – Mar 2028</em></h1>
+    </div>
+    <div class="meta">Expanded from RFQ Appendix A<br>5 phases · 33 workstreams · 8 decision gateways · 5 billing milestones</div>
+  </header>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--p0)"></i>Mobilise &amp; Discover</span>
+    <span><i class="sw" style="background:var(--p1)"></i>Build &amp; Populate</span>
+    <span><i class="sw" style="background:var(--p2)"></i>Harden &amp; Launch</span>
+    <span><i class="sw" style="background:var(--p3)"></i>Expand &amp; Sunset</span>
+    <span><i class="sw" style="background:var(--p4)"></i>Warranty</span>
+    <span><i class="sw prov" style="background:#9a9284;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.5) 0 4px,transparent 4px 8px)"></i>Proposed timing (not dated in RFQ)</span>
+    <span><i class="dia"></i>Deliverable / sign-off</span>
+    <span><i class="dia red"></i>Payment-linked gate</span>
+    <span><i class="gk" style="width:14px;height:14px;border-width:2px"></i>Decision gateway (G0–G7)</span>
+  </div>
+
+  <div class="scroller">
+    <table id="gantt"></table>
+  </div>
+
+  <h2 class="sec">Decision gateways</h2>
+  <p class="sub">SJ Group approves each gateway before the next phase starts. Red gateways also release or freeze a billing milestone. Each gateway is marked as either stated in the RFQ or proposed by us.</p>
+  <div class="scroller" style="border:none">
+  <table class="gwt">
+    <thead><tr><th>Gate</th><th>Month</th><th>Decision</th><th>Entry criteria</th><th>Approver</th><th>If not passed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="gk"><span>G0</span></span></td><td>Nov 2026</td><td><strong style="font-weight:400">Appoint agency &amp; approve expanded scope</strong><br><span class="src rfq">RFQ · App. A</span></td><td>Proposal accepted; Aetos in or out decided; translation approach agreed</td><td>SJ Group procurement + Global Marketing</td><td>No mobilisation</td></tr>
+      <tr><td><span class="gk pay"><span>G1</span></span></td><td>Dec 2026</td><td><strong style="font-weight:400">Design &amp; content blueprint sign-off</strong><br><span class="src rfq">RFQ · §3.1, App. A</span></td><td>Wireframes, content migration matrix, sector–service mapping matrix and detailed project plan delivered</td><td>Global Marketing</td><td>CMS build can't start in January; BM1 (15%) held</td></tr>
+      <tr><td><span class="gk"><span>G2</span></span></td><td>Feb 2027</td><td><strong style="font-weight:400">Sector &amp; service content approval</strong><br><span class="src">Proposed</span></td><td>27 sector and service pages written; Legal, Compliance and P&amp;C reviews done</td><td>Global Marketing + Legal / Compliance</td><td>The April deadline for sector and service pages (§3.5) is at risk</td></tr>
+      <tr><td><span class="gk pay"><span>G3</span></span></td><td>Apr 2027</td><td><strong style="font-weight:400">Staging acceptance &amp; English content freeze</strong><br><span class="src rfq">RFQ · §3.2, §4</span></td><td>First staging delivered; QA, accessibility and Lighthouse checks pass; all English content approved, which starts translation</td><td>Global Marketing + incumbent dev agency</td><td>BM2 (20%) held; translation and transition notices slip</td></tr>
+      <tr><td><span class="gk"><span>G4</span></span></td><td>Jun 2027</td><td><strong style="font-weight:400">Go / No-Go for launch</strong><br><span class="src">Proposed</span></td><td>All pen-test findings fixed; 301 map verified; analytics tested; pre-launch Lighthouse run meets targets</td><td>Global Marketing + Security / IT</td><td>Go-live delayed; legacy business pages stay up</td></tr>
+      <tr><td><span class="gk pay"><span>G5</span></span></td><td>Jul 2027</td><td><strong style="font-weight:400">Performance audit #1 &amp; non-business wireframe approval</strong><br><span class="src rfq">RFQ · §3.3, §3.6</span></td><td>Lighthouse targets met on Desktop and Mobile; Core Web Vitals pass; new wireframes delivered</td><td>Global Marketing</td><td>BM3 (20%) frozen until fixes are made at agency cost</td></tr>
+      <tr><td><span class="gk pay"><span>G6</span></span></td><td>Dec 2027</td><td><strong style="font-weight:400">Decommission &amp; SOW acceptance</strong><br><span class="src rfq">RFQ · §4, App. A</span></td><td>All legacy pages sunset; redirect health confirmed; handover done; security scans clean. Confirm before the DNS transfer, which can't be undone</td><td>Global Marketing + brand comms leads + IT</td><td>DNS transfer postponed; BM4 (25%) held</td></tr>
+      <tr><td><span class="gk pay"><span>G7</span></span></td><td>Jan → Mar 2028</td><td><strong style="font-weight:400">Performance audit #2 &amp; warranty close</strong><br><span class="src rfq">RFQ · §3.3, §4</span></td><td>Lighthouse targets met again; post-migration bugs fixed; final analytics review</td><td>Global Marketing</td><td>BM5 (20%) frozen until fixed</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="notes">
+    <div class="note"><h3>Critical path</h3><p>December sign-offs on the wireframes and migration matrix → sector/service pages fully populated by April staging → penetration test and fixes in May → June go-live. A slip at any step pushes the go-live back.</p></div>
+    <div class="note"><h3>Payment risk</h3><p>The Lighthouse audits in July 2027 and January 2028 can freeze BM3 and BM5 (40% of the fee). Performance work therefore runs from March to June and again after the December sunset.</p></div>
+    <div class="note"><h3>Confirm with SJ Group</h3><p>Translation dates, the scope of non-business content, the specs for the 5 future modules, and whether Aetos is in scope. Hatched bars show proposed timing until these are agreed.</p></div>
+  </div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const months=["Nov","Dec","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar"];
+const gates={1:"BM1",5:"BM2",8:"BM3",13:"BM4",16:"BM5"};
+const pct={1:"15%",5:"20%",8:"20%",13:"25%",16:"20%"};
+const NOW=0; // Nov 2026
+// [name, deliverable, colorVar, [[start,end,prov?]...], [milestone months], redMilestones]
+const phases=[
+ {name:"Phase 0 · Mobilise & Discover",c:"--p0",rows:[
+  ["Kickoff & governance","RACI, stakeholder map, detailed plan sign-off","--p0",[[0,1]],[1]],
+  ["Tracking list & ticketing setup","Live tracker, ticket portal, status dashboard, SLA","--p0",[[1,1]],[1]],
+  ["Baseline audit & benchmarking","Lighthouse baseline; AECOM / Arup / Worley / WSP review","--p0",[[1,1]]],
+  ["Legacy content inventory","Crawl of 9 sites (Aetos provisional)","--p0",[[1,1]]],
+  ["Content migration & mapping matrices","Retain / merge / rewrite / retire; 18 × 9 sector–service map","--p0",[[1,1]],[1]],
+  ["Business-page wireframes","Sectors, Services, Projects, Insights templates","--p0",[[1,1]],[1]],
+ ]},
+ {name:"Phase 1 · Build & Populate",c:"--p1",rows:[
+  ["Code audit & refactor (41 modules)","All modules pass VIP-Go scans","--p1",[[2,4]]],
+  ["Module customisation, swap & blank canvas","Font/colour/size/placement controls; module swap; new module #41","--p1",[[2,3]]],
+  ["Template & cross-pollination build","Tile sections plus mapping-matrix interface","--p1",[[2,3]]],
+  ["Integrations & plugins","Workday, HubSpot, Gravity Forms, Weglot, Maps, consent","--p1",[[3,5]]],
+  ["Legal / Compliance / P&C review","Content approvals across stakeholders","--p1",[[2,5]]],
+  ["Sector & service content","18 sectors + 9 services written and populated","--p1",[[2,3]],[3]],
+  ["Projects & insights migration","60 projects · 100 insights","--p1",[[4,4]],[4]],
+  ["First staging & QA","Deployed with the incumbent agency","--p1",[[5,5]],[],[5]],
+ ]},
+ {name:"Phase 2 · Harden & Launch",c:"--p2",rows:[
+  ["Transition notices","Drafted, designed, deployed on legacy sites","--p2",[[5,5]],[5]],
+  ["Chinese translation (business pages)","Simplified + Traditional Chinese after EN approval","--p2",[[5,6,1]]],
+  ["SEO 1-to-1 redirect map","High-value legacy URLs mapped to new SJ URLs","--p2",[[4,7]]],
+  ["Performance & accessibility tuning","Mobile ≥70 · Desktop ≥85 · A11y ≥90 · CWV pass","--p2",[[4,7]]],
+  ["Pen test & remediation","Independent third party; all findings fixed","--p2",[[6,6]],[6]],
+  ["Analytics testing & go-live","Business pages live; legacy business pages redirected","--p2",[[6,7]],[7]],
+ ]},
+ {name:"Phase 3 · Expand & Sunset",c:"--p3",rows:[
+  ["Lighthouse audit #1","Gates BM3","--p3",[],[],[8]],
+  ["Non-business wireframes","About Us, Heritage, Careers, etc.","--p3",[[8,8]],[8]],
+  ["CMS revamp & 5 future modules","Specs to be defined; revamp finalised in September","--p3",[[8,10]],[10]],
+  ["Non-business content + translation","Population and CN translation (up to 100% sitemap growth)","--p3",[[9,11,1]]],
+  ["External directories & links","Profiles, listings, backlinks updated","--p3",[[9,9]]],
+  ["Legacy page sunsets & handover","Training, documentation, mapping-matrix guide","--p3",[[8,11]],[11]],
+  ["Security scans & traffic review","Redirect health, 404s, rankings","--p3",[[12,12]]],
+  ["DNS transfer & decommission","Full shutdown of legacy sites; SOW complete","--p3",[[13,13]],[],[13]],
+ ]},
+ {name:"Phase 4 · Warranty",c:"--p4",rows:[
+  ["Lighthouse audit #2","Gates BM5","--p4",[],[],[14]],
+  ["Monitoring & bug fixes","Post-migration fixes","--p4",[[14,15]]],
+  ["Final analytics & warranty close","Performance review; close-out report","--p4",[[15,16]],[],[16]],
+ ]},
+ {name:"Ongoing",c:"--muted",rows:[
+  ["Project management & stakeholder interface","Single point of contact for regional comms leads","--muted",[[0,16]]],
+  ["Ticketing & follow-the-sun SLA support","UK · ME/SA · Asia · ANZ · N. America hours","--muted",[[1,16]]],
+ ]},
+];
+
+const t=document.getElementById('gantt');
+let h=`<thead><tr class="yr"><th class="c-ws"></th><th class="c-del"></th><th class="y" colspan="2">2026</th><th class="y" colspan="12">2027</th><th class="y" colspan="3">2028</th></tr><tr><th class="c-ws">Workstream</th><th class="c-del">Key deliverable</th>`;
+months.forEach((m,i)=>h+=`<th class="m${gates[i]?' gate':''}${i===NOW?' now':''}">${m}</th>`);
+h+=`</tr></thead><tbody>`;
+const gw={0:["G0","Appoint agency & approve scope",0],1:["G1","Design & content blueprint sign-off",1],3:["G2","Sector & service content approval",0],5:["G3","Staging acceptance & EN content freeze",1],7:["G4","Go / No-Go for launch",0],8:["G5","Performance audit #1 & wireframe approval",1],13:["G6","Decommission & SOW acceptance",1],14:["G7","Performance audit #2 (warranty close Mar)",1]};
+h+=`<tr class="gw"><td class="c-ws"><strong style="font-weight:400;color:var(--blue)">Decision gateways</strong></td><td class="c-del">SJ Group approval needed to proceed</td>`;
+for(let i=0;i<17;i++){const g=gw[i];h+=`<td class="m${g?' gwcol':''}">${g?`<span class="gk${g[2]?' pay':''}" data-t="${g[0]} · ${g[1]}" data-d="${g[2]?'Payment-linked: releases or freezes a billing milestone':'Approval needed to proceed'}" data-r="${months[i]}"><span>${g[0]}</span></span>`:''}</td>`;}
+h+=`</tr>`;
+let n=0;
+phases.forEach(p=>{
+  h+=`<tr class="phase"><td class="c-ws" colspan="2"><i class="tag" style="background:var(${p.c})"></i>${p.name}</td><td colspan="17"></td></tr>`;
+  p.rows.forEach(r=>{
+    n++;
+    const [name,del,col,spans,ms=[],red=[]]=r;
+    h+=`<tr><td class="c-ws"><span class="num">${String(n).padStart(2,'0')}</span>${name}</td><td class="c-del">${del}</td>`;
+    for(let i=0;i<17;i++){
+      let cell='';
+      spans.forEach(([s,e,prov])=>{ if(i>=s&&i<=e){
+        cell+=`<div class="bar${i===s?' s':''}${i===e?' e':''}${prov?' prov':''}" style="background-color:var(${col})" data-t="${name}" data-d="${del}${prov?' (proposed timing)':''}" data-r="${months[s]} → ${months[e]}"></div>`;}});
+      if(ms.includes(i)) cell+=`<div class="ms" data-t="${name}" data-d="Sign-off: ${del}" data-r="${months[i]}"></div>`;
+      if(red.includes(i)) cell+=`<div class="ms red" data-t="${name}" data-d="${del}" data-r="${months[i]}"></div>`;
+      h+=`<td class="m${gates[i]?' gate':''}${i===NOW?' now':''}">${cell}</td>`;
+    }
+    h+=`</tr>`;
+  });
+});
+h+=`<tr class="bill"><td class="c-ws"><strong style="font-weight:400;color:var(--red)">Billing milestones</strong></td><td class="c-del">Invoice in milestone month · 90-day terms</td>`;
+for(let i=0;i<17;i++) h+=`<td class="m${gates[i]?' gate':''}">${gates[i]?`<div class="bm"><b>${pct[i]}</b>${gates[i]}</div>`:''}</td>`;
+h+=`</tr></tbody>`;
+t.innerHTML=h;
+
+// fix bar ends: add right inset where span ends, left inset where it starts
+document.querySelectorAll('.bar').forEach(b=>{
+  if(b.classList.contains('s')) b.style.left='4px';
+  if(b.classList.contains('e')) b.style.right='4px';
+});
+
+const tip=document.getElementById('tip');
+document.addEventListener('mousemove',e=>{
+  const el=e.target.closest('[data-t]');
+  if(!el){tip.style.opacity=0;return;}
+  tip.innerHTML=`<span class="t">${el.dataset.r}</span><strong style="font-weight:400">${el.dataset.t}</strong><br>${el.dataset.d}`;
+  const x=Math.min(e.clientX+14,window.innerWidth-300);
+  tip.style.left=x+'px';tip.style.top=(e.clientY+14)+'px';tip.style.opacity=1;
+});
+</script>
+</body>
+</html>
